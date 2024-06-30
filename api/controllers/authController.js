@@ -51,7 +51,7 @@ exports.login = async (req, res) => {
 
 		const { password: userPassword, ...user } = validUser._doc;
 
-		generateTokenAndSetCookie(res, user.id);
+		generateTokenAndSetCookie(res, user._id);
 
 		customMessage(res, 'Login Successfull', { user });
 	} catch (err) {
