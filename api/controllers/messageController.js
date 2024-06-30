@@ -42,7 +42,6 @@ exports.getMessages = async (req, res) => {
 
 		if (!conversation) return customError(res, 400, 'Invalid conversationId');
 
-		/*console.log(conversation);*/
 		const conversationMessages = await conversation.populate('messages');
 
 		customMessage(res, 'Messages queried successfully', { messages: conversationMessages.messages });
