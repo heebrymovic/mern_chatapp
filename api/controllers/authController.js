@@ -19,7 +19,9 @@ exports.register = async (req, res) => {
 
 		req.body.password = await hashPassword(password.toLowerCase());
 
-		req.body.profilePicture = `https://ui-avatars.com/api/?name=${username}&background=random&rounded=true`;
+		const userGender = gender.toLowerCase() == 'male' ? 'boy' : 'girl';
+
+		req.body.profilePicture = `https://avatar.iran.liara.run/public/${userGender}?username=${username}`;
 
 		req.body.gender = gender.toLowerCase();
 
