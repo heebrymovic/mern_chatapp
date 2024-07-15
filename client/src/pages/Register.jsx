@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { useSignup } from '../hooks/useSignup';
 
@@ -14,7 +15,9 @@ const initialValue = {
 const Register = () => {
 	const [formData, setFormData] = useState(initialValue);
 
-	const { signup } = useSignup();
+	const { signup, isLoading } = useSignup();
+
+	const navigate = useNavigate();
 
 	const handleChange = (e) => {
 		setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -26,7 +29,10 @@ const Register = () => {
 
 		const registerSuccess = await signup(formData);
 
-		if (registerSuccess) setFormData(initialValue);
+		if (registerSuccess) {
+			setFormData(initialValue);
+			navigate('/login');
+		}
 	};
 
 	return (
@@ -113,7 +119,9 @@ const Register = () => {
 					</p>
 
 					<div>
-						<button className="btn bg-sky-700 border-none text-white w-full">Sign Up</button>
+						<button disabled={isLoading} className="btn bg-sky-700 border-none text-white w-full">
+							{isLoading ? <span className="loading loading-spinner"></span> : `Sign Up`}
+						</button>
 					</div>
 				</form>
 			</div>
