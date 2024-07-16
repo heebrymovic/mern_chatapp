@@ -2,8 +2,9 @@ const express = require('express');
 
 const Router = express.Router();
 
-const { getFriends } = require('../controllers/userController');
+const { getFriends, getCurrentUser } = require('../controllers/userController');
 
 Router.get('/friends', getFriends);
+Router.get('/getCurrentUser', getCurrentUser);
 
 module.exports = Router;
