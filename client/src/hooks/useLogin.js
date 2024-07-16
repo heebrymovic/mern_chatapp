@@ -2,10 +2,13 @@ import axios from 'axios';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 export const useLogin = () => {
 	const [isLoading, setIsLoading] = useState(false);
 	const navigate = useNavigate();
+
+	const { setCurrentUser } = useAuth();
 
 	const login = async (formData) => {
 		if (handleError({ ...formData })) return;
@@ -16,7 +19,9 @@ export const useLogin = () => {
 
 			toast.success(res.data.message);
 
-			localStorage.setItem('user-data', JSON.stringify(res.data.user));
+			/*localStorage.setItem('user-data', JSON.stringify(res.data.user));*/
+
+			setCurrentUser({ user: res.data.user, authenticated: true });
 
 			navigate('/');
 
