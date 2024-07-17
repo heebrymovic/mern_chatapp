@@ -3,7 +3,55 @@ const Conversation = require('../models/conversationModel');
 
 const { customError, customMessage } = require('../utils');
 
+exports.createConversation = async (req, res) => {
+	const { receiverId } = req.body;
+
+	const senderId = req.userId;
+
+	if (!receiverId) return customError(res, 400, 'Request Body required a receiverId');
+
+	if (senderId === receiverId) return customError(res, 403, 'You cannot start a conversation with yourself');
+
+	try {
+		let conversation = await Conversation.findOne({ participants: { $all: [receiverId, senderId] } });
+
+		if (conversation) return customError(res, 400, 'You have already started a conversation with this user');
+
+		conversation = await Conversation.create({ participants: [senderId, receiverId] });
+
+		customMessage(res, 'Conversation created successfully', { conversation });
+	} catch (err) {
+		customError(res, 500, err.message);
+	}
+};
+
 exports.sendMessage = async (req, res) => {
+	const { message, receiverId, conversationId } = req.body;
+
+	const senderId = req.userId;
+
+	if (!message || !receiverId || !conversationId) return customError(res, 400, 'Request Body Data Not Complete');
+
+	if (senderId === receiverId) return customError(res, 403, 'You cannot send message to yourself');
+
+	try {
+		let conversation = await Conversation.findOne({ participants: { $all: [receiverId, senderId] } });
+
+		const messageData = { senderId, receiverId, conversationId, message };
+
+		const createMessage = await new Message(messageData);
+
+		const newMessage = await createMessage.save();
+
+		await conversation.updateOne({ $push: { messages: newMessage._id } });
+
+		customMessage(res, 'Message sent successfully', { message: newMessage });
+	} catch (err) {
+		customError(res, 500, err.message);
+	}
+};
+
+/*exports.sendMessage = async (req, res) => {
 	const { message, receiverId } = req.body;
 
 	const senderId = req.userId;
@@ -32,6 +80,7 @@ exports.sendMessage = async (req, res) => {
 		customError(res, 500, err.message);
 	}
 };
+*/
 
 exports.getMessages = async (req, res) => {
 	const conversationId = req.params.conversationId;
