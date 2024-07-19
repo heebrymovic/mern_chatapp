@@ -19,13 +19,9 @@ export const useLogin = () => {
 
 			toast.success(res.data.message);
 
-			/*localStorage.setItem('user-data', JSON.stringify(res.data.user));*/
-
 			setCurrentUser({ user: res.data.user, authenticated: true });
 
 			navigate('/');
-
-			/*return true;*/
 		} catch (err) {
 			toast.error(err.response.data.message || err.message);
 		} finally {

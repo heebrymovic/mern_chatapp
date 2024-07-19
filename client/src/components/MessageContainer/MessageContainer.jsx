@@ -1,22 +1,32 @@
-import Messages from './Messages';
-import ChatInput from './ChatInput';
+import { useParams } from 'react-router-dom';
+import { useEffect } from 'react';
+
+import { useConversation } from '../../context/ConversationContext';
+import { useAuth } from '../../context/AuthContext';
+import { useGetUser } from '../../hooks/useGetUser';
+import { useCreateConversation } from '../../hooks/useCreateConversation';
+import MessageArea from './MessageArea';
 import NoChatSelected from './NoChatSelected';
+import Loading from './Loading';
 
 const MessageContainer = () => {
-	const isChatSelected = false;
+	const { conversationId } = useParams();
+
+	const {
+		newConversation: { isLoadingConversation }
+	} = useConversation();
+
+	const { createConversation } = useCreateConversation();
+
+	useEffect(() => {
+		conversationId && createConversation(null, conversationId);
+	}, []);
+
 	return (
 		<div className="md:min-w-[380px]">
-			{!isChatSelected ? (
-				<NoChatSelected />
-			) : (
-				<div className="flex flex-col h-full">
-					<div className="flex flex-col">
-						<div className="py-3 px-2 bg-slate-500 text-white">To: John Doe</div>
-					</div>
-					<Messages />
-					<ChatInput />
-				</div>
-			)}
+			{isLoadingConversation && <Loading />}
+			{!conversationId && !isLoadingConversation && <NoChatSelected />}
+			{conversationId && !isLoadingConversation && <MessageArea />}
 		</div>
 	);
 };

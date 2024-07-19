@@ -1,16 +1,15 @@
-const Message = ({ position = 'chat-end' }) => {
+import { format } from 'date-fns';
+
+const Message = ({ position, message, image }) => {
 	return (
 		<div className={`chat ${position}`}>
 			<div className="chat-image avatar">
 				<div className="w-10 rounded-full">
-					<img
-						alt="Tailwind CSS chat bubble component"
-						src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
-					/>
+					<img alt="Tailwind CSS chat bubble component" src={image} />
 				</div>
 			</div>
-			<div className="chat-bubble">You underestimate my power!</div>
-			<time className="text-xs text-white">12:45</time>
+			<div className="chat-bubble">{message.message}</div>
+			<time className="text-xs text-white">{format(message.createdAt, 'K:mm aaa')}</time>
 		</div>
 	);
 };

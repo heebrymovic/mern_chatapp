@@ -16,6 +16,16 @@ exports.getFriends = async (req, res) => {
 exports.getCurrentUser = async (req, res) => {
 	const userId = req.userId;
 
+	userRequest(res, userId);
+};
+
+exports.getUser = async (req, res) => {
+	const userId = req.params.userId;
+
+	userRequest(res, userId);
+};
+
+async function userRequest(res, userId) {
 	try {
 		const users = await User.findById(userId).select('-password');
 
@@ -23,4 +33,4 @@ exports.getCurrentUser = async (req, res) => {
 	} catch (err) {
 		customError(res, 500, err.message);
 	}
-};
+}

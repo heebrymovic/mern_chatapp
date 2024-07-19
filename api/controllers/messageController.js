@@ -15,11 +15,16 @@ exports.createConversation = async (req, res) => {
 	try {
 		let conversation = await Conversation.findOne({ participants: { $all: [receiverId, senderId] } });
 
-		if (conversation) return customError(res, 400, 'You have already started a conversation with this user');
+		let dataMessage = 'Conversation Queried successfully';
 
-		conversation = await Conversation.create({ participants: [senderId, receiverId] });
+		if (!conversation) {
+			conversation = await Conversation.create({ participants: [senderId, receiverId] });
+			let dataMessage = 'Conversation created successfully';
+		}
 
-		customMessage(res, 'Conversation created successfully', { conversation });
+		const newConversation = await conversation.populate('messages');
+
+		customMessage(res, dataMessage, { conversation: newConversation });
 	} catch (err) {
 		customError(res, 500, err.message);
 	}
@@ -93,7 +98,7 @@ exports.getMessages = async (req, res) => {
 
 		const conversationMessages = await conversation.populate('messages');
 
-		customMessage(res, 'Messages queried successfully', { messages: conversationMessages.messages });
+		customMessage(res, 'Messages queried successfully', { conversation: conversationMessages });
 	} catch (err) {
 		customError(res, 500, err.message);
 	}

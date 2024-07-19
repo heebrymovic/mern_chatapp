@@ -7,7 +7,7 @@ const NoChatSelected = () => {
 	} = useAuth();
 
 	return (
-		<div className="h-full flex  items-center justify-center">
+		<div className="h-full flex items-center justify-center">
 			<div className="text-white text-center font-semibold">
 				<p>Welcome 👋 {user.fullname}</p>
 				<p>Select a chat to start messaging</p>
