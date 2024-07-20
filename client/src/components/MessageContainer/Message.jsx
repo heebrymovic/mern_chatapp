@@ -8,8 +8,10 @@ const Message = ({ position, message, image }) => {
 					<img alt="Tailwind CSS chat bubble component" src={image} />
 				</div>
 			</div>
-			<div className="chat-bubble">{message.message}</div>
-			<time className="text-xs text-white">{format(message.createdAt, 'K:mm aaa')}</time>
+			<div className={`chat-bubble text-white ${position === 'chat-end' && 'bg-blue-500'}`}>
+				{message.message}
+			</div>
+			<time className="text-xs text-gray-300">{format(message.createdAt, 'K:mm aaa')}</time>
 		</div>
 	);
 };

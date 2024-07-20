@@ -10,7 +10,7 @@ function App() {
   return (
     <AuthProvider>
       <ConversationProvider>
-        <div className="h-screen p-4 flex items-center justify-center">
+        <div className="h-screen flex items-center justify-center">
           <BrowserRouter>
             <Routes>
               <Route

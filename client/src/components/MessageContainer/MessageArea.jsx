@@ -1,6 +1,7 @@
+import { FaBars } from 'react-icons/fa6';
+
 import Messages from './Messages';
 import ChatInput from './ChatInput';
-
 import { useConversation } from '../../context/ConversationContext';
 import { useAuth } from '../../context/AuthContext';
 import { useGetUser } from '../../hooks/useGetUser';
@@ -20,11 +21,12 @@ const MessageArea = () => {
 
 	return (
 		<div className="flex flex-col h-full">
-			<div className="flex flex-col">
-				<div className="py-3 px-2 bg-slate-500 text-white">To: {selectedUser.fullname}</div>
+			<div className="flex bg-slate-500 text-white justify-between items-center py-3 px-2">
+				<span>To: {selectedUser.fullname}</span>
+				<FaBars className="md:hidden" />
 			</div>
 			<Messages conversation={conversation} activeUser={activeUser} selectedUser={selectedUser} />
-			<ChatInput />
+			<ChatInput selectedUser={selectedUser} />
 		</div>
 	);
 };

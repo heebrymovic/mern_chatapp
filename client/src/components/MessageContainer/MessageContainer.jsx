@@ -23,7 +23,7 @@ const MessageContainer = () => {
 	}, []);
 
 	return (
-		<div className="md:min-w-[380px]">
+		<div className="w-[100%] md:w-[400px]">
 			{isLoadingConversation && <Loading />}
 			{!conversationId && !isLoadingConversation && <NoChatSelected />}
 			{conversationId && !isLoadingConversation && <MessageArea />}

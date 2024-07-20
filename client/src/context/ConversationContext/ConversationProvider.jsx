@@ -13,6 +13,12 @@ const reducer = (state, action) => {
 			return { ...state, isLoadingConversation: true };
 		case 'CONVERSATION_SUCCESS':
 			return { ...state, conversation: action.payload, isLoadingConversation: false };
+		case 'SEND_MESSAGE':
+			return {
+				...state,
+				conversation: { ...state.conversation, messages: [...state.conversation.messages, action.payload] },
+				isLoadingConversation: false
+			};
 		default:
 			return state;
 	}
