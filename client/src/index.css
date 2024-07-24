@@ -33,3 +33,31 @@ body {
 textarea::-webkit-scrollbar {
 	width: 0px;
 }
+
+.typing {
+	overflow: hidden;
+	font-size: 0.8rem;
+	font-style: italic;
+	display: inline-block;
+	white-space: nowrap;
+	animation: typing 1.5s infinite;
+}
+
+.chat-bubble {
+	white-space: initial !important;
+}
+
+.chat-bubble.type {
+	padding-bottom: 5px !important;
+	padding-top: 10px !important;
+	min-height: auto !important;
+}
+
+@keyframes typing {
+	from {
+		width: 0;
+	}
+	to {
+		width: 100%;
+	}
+}

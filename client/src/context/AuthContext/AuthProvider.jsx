@@ -1,4 +1,5 @@
-import { createContext, useState, useReducer } from 'react';
+import { createContext, useState, useReducer, useRef, useEffect } from 'react';
+import { io } from 'socket.io-client';
 
 export const AuthContext = createContext();
 
@@ -36,9 +37,26 @@ const reducer = (state, action) => {
 const AuthProvider = ({ children }) => {
 	const [currentUser, setCurrentUser] = useState(initialState);
 	const [friendLists, dispatchFriendLists] = useReducer(reducer, friendList);
+	const [onlineUsers, setOnlineUsers] = useState([]);
+
+	const socket = useRef();
+
+	useEffect(() => {
+		if (currentUser.authenticated) {
+			socket.current = io('http://localhost:7500', {
+				query: {
+					userId: currentUser.user._id
+				}
+			});
+
+			socket.current.on('onlineUsers', (users) => setOnlineUsers(users));
+		}
+	}, [currentUser]);
 
 	return (
-		<AuthContext.Provider value={{ setCurrentUser, currentUser, friendLists, dispatchFriendLists }}>
+		<AuthContext.Provider
+			value={{ setCurrentUser, currentUser, friendLists, dispatchFriendLists, onlineUsers, socket }}
+		>
 			{children}
 		</AuthContext.Provider>
 	);

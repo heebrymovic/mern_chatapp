@@ -4,12 +4,14 @@ import { useEffect } from 'react';
 
 import { useCreateConversation } from '../../hooks/useCreateConversation';
 import { useConversation } from '../../context/ConversationContext';
+import { useAuth } from '../../context/AuthContext';
 
 const Conversation = ({ user }) => {
 	const { username, profilePicture, _id } = user;
 	const { conversationId } = useParams();
 	const { createConversation } = useCreateConversation();
 	const { newConversation, dispatchNewConversation } = useConversation();
+	const { onlineUsers } = useAuth();
 
 	const selectedConversation = newConversation?.conversation?.participants?.includes(_id);
 
@@ -28,7 +30,7 @@ const Conversation = ({ user }) => {
 					selectedConversation && 'bg-sky-700'
 				}`}
 			>
-				<div className="avatar online">
+				<div className={`avatar ${onlineUsers.includes(_id) && 'online'}`}>
 					<div className="w-10 rounded-full">
 						<img src={profilePicture} />
 					</div>

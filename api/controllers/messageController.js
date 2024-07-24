@@ -2,6 +2,7 @@ const Message = require('../models/messageModel');
 const Conversation = require('../models/conversationModel');
 
 const { customError, customMessage } = require('../utils');
+const { getUserSocketId, io } = require('../socket');
 
 exports.createConversation = async (req, res) => {
 	const { receiverId } = req.body;
@@ -49,6 +50,10 @@ exports.sendMessage = async (req, res) => {
 		const newMessage = await createMessage.save();
 
 		await conversation.updateOne({ $push: { messages: newMessage._id } });
+
+		const socketId = getUserSocketId(receiverId);
+
+		io.to(socketId).emit('newMessage', newMessage);
 
 		customMessage(res, 'Message sent successfully', { message: newMessage });
 	} catch (err) {

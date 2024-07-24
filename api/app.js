@@ -2,7 +2,8 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 
-const { connectDB, app } = require('./connectDB');
+const { connectDB } = require('./connectDB');
+const { app } = require('./socket');
 const { authRoutes, messageRoutes, userRoutes } = require('./routes');
 const verifyUser = require('./middleware/verifyUser');
 

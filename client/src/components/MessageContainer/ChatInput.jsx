@@ -1,54 +1,63 @@
 import { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
 import { useParams } from 'react-router-dom';
-import toast from 'react-hot-toast';
 import { IoSend } from 'react-icons/io5';
 
+import { useChatInput } from '../../hooks/useChatInput';
+import { useAuth } from '../../context/AuthContext';
 import { useConversation } from '../../context/ConversationContext';
 
 const ChatInput = ({ selectedUser }) => {
 	const { conversationId } = useParams();
-	const [message, setMessage] = useState('');
+	const { newConversation, dispatchNewConversation } = useConversation();
 
-	const sendRef = useRef();
+	const [stillTyping, setStillTyping] = useState(false);
+	const [startedTyping, setStartedTyping] = useState(false);
+	const timerRef = useRef();
 
-	const { dispatchNewConversation } = useConversation();
+	const {
+		socket,
+		currentUser: { user }
+	} = useAuth();
+	const { handleSendMessage, setMessage, message, sendRef } = useChatInput(selectedUser);
 
 	useEffect(() => {
-		let keysPressed = {};
-
-		const keydown = (e) => {
-			keysPressed[e.key] = true;
-
-			if (!keysPressed['Shift'] && e.key === 'Enter') sendRef.current.click();
-		};
-
-		document.addEventListener('keydown', keydown);
-
-		document.addEventListener('keyup', (e) => {
-			delete keysPressed[e.key];
+		socket.current?.on('newMessage', (newMessage) => {
+			conversationId === newMessage.conversationId &&
+				dispatchNewConversation({ type: 'SEND_MESSAGE', payload: newMessage });
 		});
 
-		return () => document.removeEventListener('keydown', keydown);
-	}, [sendRef]);
+		return () => socket.current?.off('newMessage');
+	}, [socket, newConversation, dispatchNewConversation, conversationId]);
 
-	const handleSendMessage = async () => {
-		if (!message.trim()) return;
-
-		try {
-			const newMessage = { message, conversationId, receiverId: selectedUser._id };
-			const res = await axios.post('/api/messages/sendMessage', newMessage);
-			dispatchNewConversation({ type: 'SEND_MESSAGE', payload: res.data.message });
-			setMessage('');
-		} catch (err) {
-			toast.error(err.response.data.message || err.message);
+	useEffect(() => {
+		if (!stillTyping && startedTyping) {
+			console.log('not typing');
+			socket?.current?.emit('stopTyping', { conversationId, receiverId: selectedUser._id });
 		}
+	}, [stillTyping, startedTyping]);
+
+	const handleKeyDown = (e) => {
+		if (e.key === 'Enter') return;
+
+		clearTimeout(timerRef.current);
+
+		setStillTyping(true);
+		setStartedTyping(true);
+
+		socket.current.emit('');
+
+		socket.current.emit('isTyping', { conversationId, receiverId: selectedUser._id, senderId: user });
+
+		timerRef.current = setTimeout(() => {
+			setStillTyping(false);
+		}, 500);
 	};
 
 	return (
 		<div className="px-3 py-1 flex flex-col p relative border-t-[1px] border-slate-500">
 			<textarea
 				onChange={(e) => setMessage(e.target.value)}
+				onKeyDown={handleKeyDown}
 				value={message}
 				className="textarea rounded-full w-full leading-5 pl-2 pr-7 min-h-0 h-9 resize-none"
 				placeholder="Enter message"
