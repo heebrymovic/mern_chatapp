@@ -39,8 +39,9 @@ const AuthProvider = ({ children }) => {
 	const [friendLists, dispatchFriendLists] = useReducer(reducer, friendList);
 	const [onlineUsers, setOnlineUsers] = useState([]);
 
-	const socket = useRef();
+	const [sidebarOpen, setSidebarOpen] = useState(false);
 
+	const socket = useRef();
 	useEffect(() => {
 		if (currentUser.authenticated) {
 			socket.current = io('http://localhost:7500', {
@@ -55,7 +56,16 @@ const AuthProvider = ({ children }) => {
 
 	return (
 		<AuthContext.Provider
-			value={{ setCurrentUser, currentUser, friendLists, dispatchFriendLists, onlineUsers, socket }}
+			value={{
+				setCurrentUser,
+				currentUser,
+				friendLists,
+				dispatchFriendLists,
+				onlineUsers,
+				socket,
+				sidebarOpen,
+				setSidebarOpen
+			}}
 		>
 			{children}
 		</AuthContext.Provider>

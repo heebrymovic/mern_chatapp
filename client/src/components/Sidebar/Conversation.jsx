@@ -11,11 +11,12 @@ const Conversation = ({ user }) => {
 	const { conversationId } = useParams();
 	const { createConversation } = useCreateConversation();
 	const { newConversation, dispatchNewConversation } = useConversation();
-	const { onlineUsers } = useAuth();
+	const { onlineUsers, setSidebarOpen } = useAuth();
 
 	const selectedConversation = newConversation?.conversation?.participants?.includes(_id);
 
 	const handleCreateConversation = () => {
+		setSidebarOpen(false);
 		!selectedConversation && createConversation(_id);
 	};
 

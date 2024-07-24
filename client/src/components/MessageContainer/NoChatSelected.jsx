@@ -1,13 +1,20 @@
 import { TiMessages } from 'react-icons/ti';
+import { FaBars } from 'react-icons/fa6';
+
 import { useAuth } from '../../context/AuthContext';
 
 const NoChatSelected = () => {
 	const {
-		currentUser: { user }
+		currentUser: { user },
+		setSidebarOpen
 	} = useAuth();
 
 	return (
-		<div className="h-full flex items-center justify-center">
+		<div className="h-full flex items-center justify-center relative">
+			<FaBars
+				className="md:hidden absolute top-[20px] right-[10px] text-md text-white"
+				onClick={() => setSidebarOpen((current) => !current)}
+			/>
 			<div className="text-white text-center font-semibold">
 				<p>Welcome 👋 {user.fullname}</p>
 				<p>Select a chat to start messaging</p>

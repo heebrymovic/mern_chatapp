@@ -22,9 +22,6 @@ const SearchBar = () => {
 				onChange={(e) => setSearchText(e.target.value)}
 				placeholder="Search...."
 			/>
-			<button className="bg-sky-700 rounded-full w-9 h-9 text-white text-lg flex items-center justify-center">
-				<HiSearch />
-			</button>
 		</div>
 	);
 };

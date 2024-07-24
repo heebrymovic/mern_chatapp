@@ -12,7 +12,8 @@ const MessageArea = () => {
 	} = useConversation();
 
 	const {
-		currentUser: { user: activeUser }
+		currentUser: { user: activeUser },
+		setSidebarOpen
 	} = useAuth();
 
 	const getSelectedUser = conversation?.participants?.find((participant) => participant !== activeUser._id);
@@ -23,7 +24,7 @@ const MessageArea = () => {
 		<div className="flex flex-col h-full">
 			<div className="flex bg-slate-500 text-white justify-between items-center py-3 px-2">
 				<span>To: {selectedUser.fullname}</span>
-				<FaBars className="md:hidden" />
+				<FaBars className="md:hidden" onClick={() => setSidebarOpen((current) => !current)} />
 			</div>
 			<Messages conversation={conversation} activeUser={activeUser} selectedUser={selectedUser} />
 			<ChatInput selectedUser={selectedUser} />
