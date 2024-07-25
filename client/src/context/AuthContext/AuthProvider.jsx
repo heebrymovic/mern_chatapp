@@ -44,7 +44,10 @@ const AuthProvider = ({ children }) => {
 	const socket = useRef();
 	useEffect(() => {
 		if (currentUser.authenticated) {
-			socket.current = io('http://localhost:7500', {
+			/*In Preoduction Change the socket URL to server URL not Localhost url
+					intially: http://localhost:PORT__NUMBER
+			*/
+			socket.current = io('https://mern-chatapp-alhf.onrender.com', {
 				query: {
 					userId: currentUser.user._id
 				}
